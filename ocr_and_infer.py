@@ -1,3 +1,5 @@
+# copied and modified from https://github.com/microsoft/table-transformer/blob/main/src/inference.py
+
 from collections import OrderedDict, defaultdict
 import json
 import argparse
@@ -54,18 +56,15 @@ structure_transform = transforms.Compose([
 
 
 def get_class_map(data_type):
-    if data_type == 'structure':
-        class_map = {
-            'table': 0,
-            'table column': 1,
-            'table row': 2,
-            'table column header': 3,
-            'table projected row header': 4,
-            'table spanning cell': 5,
-            'no object': 6
-        }
-    elif data_type == 'detection':
-        class_map = {'table': 0, 'table rotated': 1, 'no object': 2}
+    class_map = {
+        'table': 0,
+        'table column': 1,
+        'table row': 2,
+        'table column header': 3,
+        'table projected row header': 4,
+        'table spanning cell': 5,
+        'no object': 6
+    }
     return class_map
 
 
@@ -95,9 +94,6 @@ def get_args():
                         help="Directory for input words")
     parser.add_argument('--out_dir',
                         help="Output directory")
-    parser.add_argument('--mode',
-                        help="The processing to apply to the input image and tokens",
-                        choices=['detect', 'recognize', 'extract'])
     parser.add_argument('--structure_config_path',
                         help="Filepath to the structure model config file")
     parser.add_argument('--structure_model_path',
@@ -114,8 +110,6 @@ def get_args():
                         help='Output objects')
     parser.add_argument('--cells', '-l', action='store_true',
                         help='Output cells list')
-    parser.add_argument('--html', '-m', action='store_true',
-                        help='Output HTML')
     parser.add_argument('--csv', '-c', action='store_true',
                         help='Output CSV')
     parser.add_argument('--verbose', '-v', action='store_true',
@@ -983,32 +977,11 @@ def main():
                     tmp["block_num"] = 0
                     tokens.append(tmp)
 
-        if args.mode == 'recognize':
-            extracted_table = pipe.recognize(img, tokens, out_objects=args.objects, out_cells=args.csv,
-                                             out_html=args.html, out_csv=args.csv)
-            print("Table(s) recognized.")
+        extracted_table = pipe.recognize(img, tokens, out_html=True)
+        print("Table(s) recognized.")
 
-            for key, val in extracted_table.items():
-                output_result(key, val, args, img, img_file)
-
-        if args.mode == 'detect':
-            detected_tables = pipe.detect(
-                img, tokens, out_objects=args.objects, out_crops=args.crops)
-            print("Table(s) detected.")
-
-            for key, val in detected_tables.items():
-                output_result(key, val, args, img, img_file)
-
-        if args.mode == 'extract':
-            extracted_tables = pipe.extract(img, tokens, out_objects=args.objects, out_cells=args.csv,
-                                            out_html=args.html, out_csv=args.csv,
-                                            crop_padding=args.crop_padding)
-            print("Table(s) extracted.")
-
-            for table_idx, extracted_table in enumerate(extracted_tables):
-                for key, val in extracted_table.items():
-                    output_result(key, val, args, extracted_table['image'],
-                                  img_file.replace('.jpg', '_{}.jpg'.format(table_idx)))
+        for key, val in extracted_table.items():
+            output_result(key, val, args, img, img_file)
 
 
 if __name__ == "__main__":

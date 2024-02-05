@@ -41,5 +41,12 @@ python ocr_and_infer.py --structure_config_path structure_config.json --structur
       <td>0.9019</td>
       <td>0.9767</td>
     </tr>
+    <tr style="text-align: right;">
+      <td>PPStructureV2</td>
+      <td>PaddleOCR</td>
+      <td>PubTables-1M/val</td>
+      <td>0.7234</td>
+      <td>0.8073</td>
+    </tr>
   </tbody>
 </table>

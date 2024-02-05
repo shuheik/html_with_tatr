@@ -23,6 +23,7 @@ python ocr_and_infer.py --structure_config_path structure_config.json --structur
 ```
 
 ### Evaluation
+table-transformerはPubTables-1M(画像はjpg形式)、PaddleOCRはPubTabNet(画像はpng形式)で学習しているため以下は参考程度
 <table>
   <thead>
     <tr style="text-align: right;">
@@ -47,6 +48,20 @@ python ocr_and_infer.py --structure_config_path structure_config.json --structur
       <td>PubTables-1M/val</td>
       <td>0.7234</td>
       <td>0.8073</td>
+    </tr>
+    <tr style="text-align: right;">
+      <td>TATR-v1.1-Pub</td>
+      <td>PaddleOCR</td>
+      <td>PubTabNet/val</td>
+      <td>0.7196</td>
+      <td>0.7812</td>
+    </tr>
+    <tr style="text-align: right;">
+      <td>PPStructureV2</td>
+      <td>PaddleOCR</td>
+      <td>PubTabNet/val</td>
+      <td>0.8769</td>
+      <td>0.9731</td>
     </tr>
   </tbody>
 </table>
